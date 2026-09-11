@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "record-provider",
+  "name": "records-provider",
   "main": "apps/record-provider/src/index.ts",
   "compatibility_date": "2025-11-29",
   "compatibility_flags": [],
