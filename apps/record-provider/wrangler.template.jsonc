@@ -5,7 +5,7 @@
   "compatibility_date": "2025-11-29",
   "compatibility_flags": [],
   "preview_urls": false,
-  "workers_dev": true,
+  "workers_dev": false,
   "minify": true,
   "observability": {
     "logs": {
