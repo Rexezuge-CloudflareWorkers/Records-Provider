@@ -4,7 +4,7 @@ const ALLOW_HEADER = 'GET';
 const PLAIN_TEXT_CONTENT_TYPE = 'text/plain; charset=utf-8';
 
 function methodNotAllowed(): Response {
-  return new Response('Method Not Allowed', {
+  return new Response(null, {
     status: 405,
     headers: {
       Allow: ALLOW_HEADER,
@@ -13,35 +13,32 @@ function methodNotAllowed(): Response {
   });
 }
 
-function badRequest(message: string): Response {
-  return new Response(message, {
+function badRequest(): Response {
+  return new Response(null, {
     status: 400,
     headers: { 'Cache-Control': 'no-store' },
   });
 }
 
 function notFound(): Response {
-  return new Response('not found', {
+  return new Response(null, {
     status: 404,
     headers: { 'Cache-Control': 'no-store' },
   });
 }
 
 function invalidStoredEncoding(): Response {
-  return new Response('invalid stored encoding', { status: 500 });
+  return new Response(null, {
+    status: 500,
+    headers: { 'Cache-Control': 'no-store' },
+  });
 }
 
 async function handleGetRecord(request: Request, env: Env): Promise<Response> {
   const pathname: string = new URL(request.url).pathname;
   const keyResult = extractRecordKey(pathname);
   if (!isRecordKeySuccess(keyResult)) {
-    if (keyResult.error === 'missing') {
-      return badRequest('missing record path');
-    }
-    if (keyResult.error === 'key-too-long') {
-      return badRequest('record path too long');
-    }
-    return badRequest('invalid path encoding');
+    return badRequest();
   }
 
   const storedValue: string | null = await env.RECORD_CACHE.get(keyResult.key);
