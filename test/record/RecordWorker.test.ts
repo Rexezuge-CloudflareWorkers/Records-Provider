@@ -50,13 +50,14 @@ describe('Record worker', () => {
   it('returns 404 on a KV miss', async () => {
     const response = await worker.fetch(getRequest('/missing'), createEnv(null));
     expect(response.status).toBe(404);
-    expect(await response.text()).toBe('not found');
+    expect(await response.text()).toBe('');
   });
 
   it('returns 400 for the root path', async () => {
     const env = createEnv(null);
     const response = await worker.fetch(getRequest('/'), env);
     expect(response.status).toBe(400);
+    expect(await response.text()).toBe('');
     expect(env.RECORD_CACHE.get).not.toHaveBeenCalled();
   });
 
@@ -64,6 +65,7 @@ describe('Record worker', () => {
     const env = createEnv(null);
     const response = await worker.fetch(getRequest('/%E0%A4%A'), env);
     expect(response.status).toBe(400);
+    expect(await response.text()).toBe('');
     expect(env.RECORD_CACHE.get).not.toHaveBeenCalled();
   });
 
@@ -71,13 +73,14 @@ describe('Record worker', () => {
     const env = createEnv(null);
     const response = await worker.fetch(getRequest(`/${'a'.repeat(513)}`), env);
     expect(response.status).toBe(400);
-    expect(await response.text()).toBe('record path too long');
+    expect(await response.text()).toBe('');
     expect(env.RECORD_CACHE.get).not.toHaveBeenCalled();
   });
 
   it('returns 500 for corrupt stored base64', async () => {
     const response = await worker.fetch(getRequest('/aaaa'), createEnv('!!!not-base64!!!'));
     expect(response.status).toBe(500);
+    expect(await response.text()).toBe('');
   });
 
   it('returns 405 for non-GET methods with an Allow header', async () => {
@@ -86,6 +89,7 @@ describe('Record worker', () => {
       const response = await worker.fetch(getRequest('/aaaa/bbbb', method), env);
       expect(response.status).toBe(405);
       expect(response.headers.get('Allow')).toBe('GET');
+      expect(await response.text()).toBe('');
       expect(env.RECORD_CACHE.get).not.toHaveBeenCalled();
     }
   });
