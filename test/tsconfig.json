@@ -1,0 +1,15 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "paths": {
+      "@record-provider/record-core": ["../packages/record-core/src"],
+      "@record-provider/record-core/*": ["../packages/record-core/src/*"],
+      "@record-provider/record-provider": ["../apps/record-provider/src"],
+      "@record-provider/record-provider/*": ["../apps/record-provider/src/*"],
+      "@/*": ["../apps/record-provider/src/*"]
+    }
+  },
+  "include": ["../worker-configuration.d.ts", "../apps/record-provider/src/types.d.ts", "./**/*.ts"],
+  "exclude": ["node_modules"]
+}
