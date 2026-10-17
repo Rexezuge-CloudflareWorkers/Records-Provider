@@ -11,13 +11,13 @@
     "logs": {
       "enabled": true,
       "head_sampling_rate": 1,
-      "invocation_logs": true
-    }
+      "invocation_logs": true,
+    },
   },
   "kv_namespaces": [
     {
       "binding": "RECORD_CACHE",
-      "id": "00000000000000000000000000000000"
-    }
-  ]
+      "id": "00000000000000000000000000000000",
+    },
+  ],
 }

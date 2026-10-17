@@ -9,15 +9,16 @@ Record-Provider is a minimal Cloudflare Worker that serves records from a single
 - `GET /aaaa/bbbb` → KV key `aaaa/bbbb` → `200` with decoded body.
 - Trailing slashes are normalized (`/aaaa/bbbb/` → `aaaa/bbbb`). Query strings are ignored.
 - `/` or empty path → `400`. Bad `%`-encoding or key bytes `>512` → `400`.
-- KV miss → `404`. Corrupt base64 / non-UTF-8 bytes → `500`.
+- KV miss → `404`. Corrupt base64 / non-UTF-8 bytes → `500`, message masked.
 - Non-`GET` → `405` + `Allow: GET`.
+- Errors carry the shared `{"Exception":{"Type","Message"}}` envelope.
 - Responses set `Cache-Control: no-store`.
 
 ## Cloudflare Bindings
 
 - KV namespace binding: `RECORD_CACHE`
 
-Copy `apps/record-provider/wrangler.template.jsonc` to `wrangler.jsonc` (or let CI generate it via `scripts/prepare-wrangler-config.ts`) and fill in the KV namespace id.
+Copy `apps/record-provider/wrangler.template.jsonc` to `wrangler.jsonc` (or let CI generate it with `pnpm run prepare-config`) and fill in the KV namespace id.
 
 Create the namespace before deploy:
 
@@ -37,10 +38,8 @@ curl https://<worker-dev>/aaaa/bbbb
 
 ```bash
 pnpm install
-pnpm -r typecheck
-pnpm run lint
+pnpm run checks   # typecheck, lint, format:check, god-files, test:coverage
 pnpm run test
-pnpm run test:coverage
 pnpm run typegen   # after changing wrangler bindings
 pnpm run prepare-config  # copy template → wrangler.jsonc, provision RECORD_CACHE id
 pnpm exec wrangler dev
